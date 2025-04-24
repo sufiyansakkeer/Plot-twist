@@ -1,15 +1,14 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-
-import '../../state/api_service.dart';
+import 'package:plot_twist/domain/usecases/generate_plot_twist.dart';
 
 part 'plot_twist_state.dart';
 
 class PlotTwistCubit extends Cubit<PlotTwistState> {
-  final ApiService _apiService;
+  final GeneratePlotTwist generatePlotTwist;
 
-  PlotTwistCubit(this._apiService) : super(const PlotTwistState());
+  PlotTwistCubit(this.generatePlotTwist) : super(const PlotTwistState());
 
   void updateFormat(String newFormat) {
     emit(
@@ -40,7 +39,7 @@ class PlotTwistCubit extends Cubit<PlotTwistState> {
     );
 
     try {
-      final content = await _apiService.generateContent(
+      final content = await generatePlotTwist(
         state.inputText,
         state.selectedFormat,
       );

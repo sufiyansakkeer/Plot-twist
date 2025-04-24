@@ -3,12 +3,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
 import '../../domain/repositories/plot_twist_repository.dart';
-import '../../state/api_service.dart';
 
 class PlotTwistRepositoryImpl implements PlotTwistRepository {
-  final ApiService apiService;
-
-  PlotTwistRepositoryImpl(this.apiService);
+  PlotTwistRepositoryImpl();
 
   @override
   Future<String> generateContent(String inputText, String format) async {

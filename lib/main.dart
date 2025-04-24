@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:plot_twist/presentation/cubit/plot_twist_cubit.dart';
 import 'package:plot_twist/presentation/ui/home_screen.dart';
-import 'state/api_service.dart';
 import 'data/repositories/plot_twist_repository_impl.dart';
 import 'domain/repositories/plot_twist_repository.dart';
 import 'domain/usecases/generate_plot_twist.dart';
@@ -14,8 +15,7 @@ Future<void> main() async {
     debugPrint('Error loading .env file: $e');
   }
 
-  final ApiService apiService = ApiService();
-  final PlotTwistRepository repository = PlotTwistRepositoryImpl(apiService);
+  final PlotTwistRepository repository = PlotTwistRepositoryImpl();
   final GeneratePlotTwist generatePlotTwist = GeneratePlotTwist(repository);
 
   runApp(PlotTwistApp(generatePlotTwist: generatePlotTwist));
@@ -28,10 +28,20 @@ class PlotTwistApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'PlotTwist',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: const HomeScreen(),
+    return BlocProvider(
+      create: (context) => PlotTwistCubit(generatePlotTwist),
+      child: MaterialApp(
+        title: 'PlotTwist',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          chipTheme: Theme.of(context).chipTheme.copyWith(
+            selectedColor: Colors.lightBlue.shade200,
+            backgroundColor: Colors.grey.shade100,
+            labelStyle: const TextStyle(color: Colors.black),
+          ),
+        ),
+        home: const HomeScreen(),
+      ),
     );
   }
 }

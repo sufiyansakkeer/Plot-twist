@@ -20,10 +20,12 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.8
   flutter_dotenv: ^5.0.2
-  provider: ^6.1.3
-  # openai: ^1.0.0 
-  google_generative_ai: ^0.4.0 
-  http: ^1.1.0 
+  # provider: ^6.1.3 # Removed provider
+  flutter_bloc: ^8.1.6 # Added flutter_bloc
+  equatable: ^2.0.5 # Added equatable for state comparison
+  # openai: ^1.0.0
+  google_generative_ai: ^0.4.0
+  http: ^1.1.0
 
 dev_dependencies:
   flutter_test:

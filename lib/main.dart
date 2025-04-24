@@ -1,37 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
-import 'state/app_state.dart';
-import 'ui/home_screen.dart';
+import 'package:plot_twist/presentation/ui/home_screen.dart';
+import 'state/api_service.dart';
+import 'data/repositories/plot_twist_repository_impl.dart';
+import 'domain/repositories/plot_twist_repository.dart';
+import 'domain/usecases/generate_plot_twist.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   try {
-    // Load the .env file from assets
-    await dotenv.load(fileName: ".env");
-    debugPrint('Loaded .env file successfully.');
+    await dotenv.load(fileName: '.env');
   } catch (e) {
-    // It's common for dotenv to fail if the file is not found,
-    // which might be expected in release builds if you don't include it.
-    // Log the error but allow the app to continue.
     debugPrint('Error loading .env file: $e');
   }
-  runApp(const PlotTwistApp());
+
+  final ApiService apiService = ApiService();
+  final PlotTwistRepository repository = PlotTwistRepositoryImpl(apiService);
+  final GeneratePlotTwist generatePlotTwist = GeneratePlotTwist(repository);
+
+  runApp(PlotTwistApp(generatePlotTwist: generatePlotTwist));
 }
 
 class PlotTwistApp extends StatelessWidget {
-  const PlotTwistApp({super.key});
+  final GeneratePlotTwist generatePlotTwist;
+
+  const PlotTwistApp({super.key, required this.generatePlotTwist});
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => AppState(),
-      child: MaterialApp(
-        title: 'PlotTwist',
-        theme: ThemeData(primarySwatch: Colors.blue),
-        home: const HomeScreen(),
-      ),
+    return MaterialApp(
+      title: 'PlotTwist',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: const HomeScreen(),
     );
   }
 }

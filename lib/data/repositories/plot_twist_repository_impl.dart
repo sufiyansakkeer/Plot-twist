@@ -1,8 +1,16 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter/foundation.dart';
-import 'package:google_generative_ai/google_generative_ai.dart'; // Import Gemini package
+import 'package:google_generative_ai/google_generative_ai.dart';
 
-class ApiService {
+import '../../domain/repositories/plot_twist_repository.dart';
+import '../../state/api_service.dart';
+
+class PlotTwistRepositoryImpl implements PlotTwistRepository {
+  final ApiService apiService;
+
+  PlotTwistRepositoryImpl(this.apiService);
+
+  @override
   Future<String> generateContent(String inputText, String format) async {
     final apiKey = dotenv.env['GEMINI_API_KEY'];
     if (apiKey == null || apiKey.isEmpty) {

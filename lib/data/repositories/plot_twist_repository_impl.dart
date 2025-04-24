@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 import '../../domain/repositories/plot_twist_repository.dart';
 
 class PlotTwistRepositoryImpl implements PlotTwistRepository {
+  final Connectivity _connectivity = Connectivity();
+
   PlotTwistRepositoryImpl();
 
   @override
@@ -13,6 +16,14 @@ class PlotTwistRepositoryImpl implements PlotTwistRepository {
     if (apiKey == null || apiKey.isEmpty) {
       debugPrint('GEMINI_API_KEY is not set or is empty.');
       throw Exception('GEMINI_API_KEY is missing.');
+    }
+
+    // Check internet connection
+    final connectivityResult = await _connectivity.checkConnectivity();
+    if (!connectivityResult.contains(ConnectivityResult.mobile) &&
+        !connectivityResult.contains(ConnectivityResult.wifi) &&
+        !connectivityResult.contains(ConnectivityResult.ethernet)) {
+      throw Exception('No internet connection');
     }
 
     // Initialize the Generative Model
@@ -46,6 +57,11 @@ class PlotTwistRepositoryImpl implements PlotTwistRepository {
       }
     } catch (e) {
       debugPrint('Error calling Gemini API: $e');
+      if (e.toString().contains('No internet connection')) {
+        throw Exception(
+          'No internet connection. Please check your connection.',
+        );
+      }
       throw Exception('Failed to generate content using Gemini: $e');
     }
   }

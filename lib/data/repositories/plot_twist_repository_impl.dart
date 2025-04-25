@@ -2,11 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:hive/hive.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../domain/repositories/plot_twist_repository.dart';
+import '../models/plot_twist_history_model.dart';
 
 class PlotTwistRepositoryImpl implements PlotTwistRepository {
   final Connectivity _connectivity = Connectivity();
+  final String _historyBoxName = 'plot_twist_history';
+  final Uuid _uuid = Uuid();
 
   PlotTwistRepositoryImpl();
 
@@ -41,7 +46,10 @@ class PlotTwistRepositoryImpl implements PlotTwistRepository {
 
       // Extract the generated text
       if (response.text != null) {
-        return response.text!;
+        final generatedContent = response.text!;
+        // Automatically save to history
+        await saveToHistory(inputText, generatedContent, format);
+        return generatedContent;
       } else {
         debugPrint('Gemini response text was null.');
         // Check for blocked content or other issues
@@ -77,5 +85,52 @@ class PlotTwistRepositoryImpl implements PlotTwistRepository {
       default:
         return 'Generate creative content based on this input: $inputText';
     }
+  }
+
+  @override
+  Future<void> saveToHistory(String inputText, String generatedContent, String format) async {
+    final box = await Hive.openBox<PlotTwistHistoryModel>(_historyBoxName);
+    
+    final historyItem = PlotTwistHistoryModel(
+      id: _uuid.v4(),
+      inputText: inputText,
+      generatedContent: generatedContent,
+      format: format,
+      createdAt: DateTime.now(),
+    );
+    
+    await box.add(historyItem);
+    await box.close();
+  }
+
+  @override
+  Future<List<PlotTwistHistoryModel>> getHistoryItems() async {
+    final box = await Hive.openBox<PlotTwistHistoryModel>(_historyBoxName);
+    final items = box.values.toList();
+    await box.close();
+    
+    // Sort by date, newest first
+    items.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    
+    return items;
+  }
+
+  @override
+  Future<void> deleteHistoryItem(String id) async {
+    final box = await Hive.openBox<PlotTwistHistoryModel>(_historyBoxName);
+    
+    final indexToDelete = box.values.toList().indexWhere((item) => item.id == id);
+    if (indexToDelete != -1) {
+      await box.deleteAt(indexToDelete);
+    }
+    
+    await box.close();
+  }
+
+  @override
+  Future<void> clearAllHistory() async {
+    final box = await Hive.openBox<PlotTwistHistoryModel>(_historyBoxName);
+    await box.clear();
+    await box.close();
   }
 }

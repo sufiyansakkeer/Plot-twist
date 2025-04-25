@@ -9,7 +9,7 @@ class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key, required this.repository});
 
   @override
-  _HistoryPageState createState() => _HistoryPageState();
+  State<HistoryPage> createState() => _HistoryPageState();
 }
 
 class _HistoryPageState extends State<HistoryPage> {

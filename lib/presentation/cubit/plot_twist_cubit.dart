@@ -15,25 +15,27 @@ class PlotTwistCubit extends Cubit<PlotTwistState> {
       state.copyWith(
         selectedFormat: newFormat,
         generatedContent: '',
-        error: null,
         clearError: true,
       ),
     );
   }
 
-  // Method to update the input text
   void updateInputText(String text) {
-    emit(state.copyWith(inputText: text));
+    emit(state.copyWith(inputText: text, clearError: true));
   }
 
   Future<void> generateContent() async {
     if (state.isLoading) return; // Prevent concurrent requests
+    
+    if (state.inputText.trim().isEmpty) {
+      emit(state.copyWith(error: 'Please enter some text'));
+      return;
+    }
 
     emit(
       state.copyWith(
         isLoading: true,
         generatedContent: '',
-        error: null,
         clearError: true,
       ),
     );

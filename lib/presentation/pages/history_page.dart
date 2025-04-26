@@ -82,9 +82,11 @@ class _HistoryPageState extends State<HistoryPage> {
     setState(() {
       _loadHistory();
     });
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('History item deleted')));
+    if (mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('History item deleted')));
+    }
   }
 
   Future<void> _showClearHistoryDialog() async {
@@ -114,9 +116,11 @@ class _HistoryPageState extends State<HistoryPage> {
       setState(() {
         _loadHistory();
       });
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('History cleared')));
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('History cleared')));
+      }
     }
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:plot_twist/domain/usecases/generate_plot_twist.dart';
+import 'package:plot_twist/features/plot_twist/domain/usecases/generate_plot_twist.dart';
 
 part 'plot_twist_state.dart';
 
@@ -26,18 +26,14 @@ class PlotTwistCubit extends Cubit<PlotTwistState> {
 
   Future<void> generateContent() async {
     if (state.isLoading) return; // Prevent concurrent requests
-    
+
     if (state.inputText.trim().isEmpty) {
       emit(state.copyWith(error: 'Please enter some text'));
       return;
     }
 
     emit(
-      state.copyWith(
-        isLoading: true,
-        generatedContent: '',
-        clearError: true,
-      ),
+      state.copyWith(isLoading: true, generatedContent: '', clearError: true),
     );
 
     try {

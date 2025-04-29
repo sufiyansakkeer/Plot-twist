@@ -1,12 +1,13 @@
+import 'package:plot_twist/features/auth/presentation/bloc/auth_service.dart';
+import 'package:plot_twist/features/plot_twist/domain/repositories/plot_twist_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:plot_twist/core/extension/sized_box_extension.dart';
-import 'package:plot_twist/domain/repositories/plot_twist_repository.dart';
+import 'package:plot_twist/core/extensions/sized_box_extension.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../cubit/plot_twist_cubit.dart';
+import 'package:plot_twist/features/plot_twist/presentation/cubit/plot_twist_cubit.dart';
 
 class HomeScreen extends StatelessWidget {
   final PlotTwistRepository repository;
@@ -30,6 +31,35 @@ class _HomeScreenContent extends StatelessWidget {
         final cubit = context.read<PlotTwistCubit>();
 
         return Scaffold(
+          appBar: AppBar(title: const Text('Plot Twist Generator')),
+          drawer: Drawer(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: <Widget>[
+                const DrawerHeader(
+                  decoration: BoxDecoration(color: Colors.blue),
+                  child: Text(
+                    'Menu',
+                    style: TextStyle(color: Colors.white, fontSize: 24),
+                  ),
+                ),
+                ListTile(
+                  leading: Icon(Icons.logout),
+                  title: const Text('Sign Out'),
+                  onTap: () async {
+                    // Close the drawer first
+                    Navigator.pop(context);
+                    await context.read<AuthService>().signOut();
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      '/auth',
+                      (route) => false,
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
           body: SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -60,6 +90,7 @@ class _HomeScreenContent extends StatelessWidget {
                               ),
                             ],
                           ),
+                          // Removed ElevatedButton from here
                           20.height(),
                           Padding(
                             padding: const EdgeInsets.symmetric(

@@ -1,0 +1,25 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "plot-twist-8f9fb",
+          "appId": "1:180981996983:android:b4b37d0e107898cab6dc32",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "plot-twist-8f9fb",
+          "configurations": {
+            "android": "1:180981996983:android:b4b37d0e107898cab6dc32",
+            "ios": "1:180981996983:ios:f0c8ee4e959cb67fb6dc32",
+            "macos": "1:180981996983:ios:f0c8ee4e959cb67fb6dc32",
+            "web": "1:180981996983:web:42d85056699a252eb6dc32",
+            "windows": "1:180981996983:web:a7534ef5916f4d9ab6dc32"
+          }
+        }
+      }
+    }
+  }
+}

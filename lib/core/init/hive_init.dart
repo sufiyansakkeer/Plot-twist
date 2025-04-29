@@ -1,6 +1,6 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
-import '../../data/models/plot_twist_history_model.dart';
+import 'package:plot_twist/features/plot_twist/data/models/plot_twist_history_model.dart';
 
 class HiveInit {
   static Future<void> init() async {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../../data/models/plot_twist_history_model.dart';
-import '../../domain/repositories/plot_twist_repository.dart';
+import 'package:plot_twist/features/plot_twist/data/models/plot_twist_history_model.dart';
+import 'package:plot_twist/features/plot_twist/domain/repositories/plot_twist_repository.dart';
 
 class HistoryPage extends StatefulWidget {
   final PlotTwistRepository repository;
